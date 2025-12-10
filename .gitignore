@@ -45,6 +45,8 @@ frontend-source.zip
 .gem/
 tmp_cacert.pem
 tmp_test.txt
+backend/web-td.json
+backend/worker-td.json
 
 # Mac metadata
 ._*
