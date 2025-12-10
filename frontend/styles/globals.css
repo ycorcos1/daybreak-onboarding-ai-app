@@ -1,0 +1,73 @@
+:root {
+  --color-primary-teal: #0096a8;
+  --color-secondary-gold: #f4a61c;
+  --color-soft-cream: #fff4ec;
+  --color-warm-beige: #faf3ec;
+  --color-deep-aqua: #007a8c;
+  --color-accent-red: #ff4b4b;
+  --color-text: #2f2f2f;
+  --color-muted: #6b7280;
+  --color-border: #e0dad2;
+  --color-card: #faf3ec;
+  --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --font-sans: "Inter", "Helvetica Neue", Arial, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--color-soft-cream);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+}
+
+a {
+  color: var(--color-primary-teal);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0 0 8px;
+  color: var(--color-deep-aqua);
+  font-weight: 600;
+}
+
+p {
+  margin: 0 0 12px;
+}
+
+ul {
+  padding-left: 20px;
+  margin: 0 0 12px;
+}
+
+button {
+  font-family: var(--font-sans);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}

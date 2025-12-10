@@ -1,0 +1,51 @@
+# OS & editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Environment & secrets
+.env
+.env.local
+.env.*.local
+.ruby-gemset
+.ruby-version.local
+
+# Node / JS
+node_modules/
+pnpm-lock.yaml
+yarn.lock
+npm-debug.log*
+*.log
+
+# Next.js
+.next/
+out/
+
+# Rails
+tmp/
+log/
+storage/
+coverage/
+
+# Bundler
+.bundle/
+vendor/bundle/
+backend/vendor/bundle/
+backend/.bundle/
+
+# Generated artifacts
+dist/
+build/
+docs/
+frontend-export.zip
+frontend-source.zip
+.brew_cache/
+.gem/
+tmp_cacert.pem
+tmp_test.txt
+
+# Mac metadata
+._*
+

@@ -1,0 +1,59 @@
+profiles:
+  - name: "After School"
+    timezone: "America/Los_Angeles"
+    windows:
+      monday:
+        - start: "15:00"
+          end: "18:00"
+      tuesday:
+        - start: "15:00"
+          end: "18:00"
+      wednesday:
+        - start: "15:00"
+          end: "18:00"
+      thursday:
+        - start: "15:00"
+          end: "18:00"
+      friday:
+        - start: "15:00"
+          end: "17:00"
+
+  - name: "Weekend Mornings"
+    timezone: "America/Los_Angeles"
+    windows:
+      saturday:
+        - start: "09:00"
+          end: "12:00"
+      sunday:
+        - start: "09:00"
+          end: "12:00"
+
+  - name: "After School East"
+    timezone: "America/New_York"
+    windows:
+      monday:
+        - start: "15:00"
+          end: "18:00"
+      tuesday:
+        - start: "15:00"
+          end: "18:00"
+      wednesday:
+        - start: "15:00"
+          end: "18:00"
+      thursday:
+        - start: "15:00"
+          end: "18:00"
+      friday:
+        - start: "15:00"
+          end: "18:00"
+
+  - name: "Weekend Mornings East"
+    timezone: "America/New_York"
+    windows:
+      saturday:
+        - start: "09:00"
+          end: "12:00"
+      sunday:
+        - start: "09:00"
+          end: "12:00"
+

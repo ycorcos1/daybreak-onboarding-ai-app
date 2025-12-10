@@ -1,0 +1,36 @@
+partner_districts:
+  - "North Valley Unified"
+  - "Eastview School District"
+
+rules:
+  - name: "partner_medicaid"
+    conditions:
+      partner_district: true
+      insurance_status: "medicaid"
+    category: "no_cost"
+    explanation: "Your district partners with Daybreak and Medicaid typically covers services at no cost to you."
+
+  - name: "partner_insured"
+    conditions:
+      partner_district: true
+      insurance_status: "insured"
+    category: "copay"
+    explanation: "Because your district partners with Daybreak, you may only have a co-pay depending on your plan."
+
+  - name: "insured_not_sure"
+    conditions:
+      insurance_status: "not_sure"
+    category: "tbd"
+    explanation: "We will confirm your insurance coverage and any costs before your first session."
+
+  - name: "uninsured"
+    conditions:
+      insurance_status: "uninsured"
+    category: "tbd"
+    explanation: "We will work with you to understand options and any costs before your first session."
+
+  - name: "default"
+    conditions: {}
+    category: "tbd"
+    explanation: "We will review your information and confirm any costs before your first session."
+
