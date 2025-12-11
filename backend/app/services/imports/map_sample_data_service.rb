@@ -6,7 +6,7 @@ require "digest"
 module Imports
   # Maps imported_rows data into domain tables in a FK-safe order.
   class MapSampleDataService
-    PASSWORD_FALLBACK = "Temp123!".freeze
+    PASSWORD_FALLBACK = ENV.fetch("SAMPLE_DATA_DEMO_PASSWORD", "CHANGE_ME_PLEASE").freeze
 
     def run
       # Reference-only import (no user accounts)
