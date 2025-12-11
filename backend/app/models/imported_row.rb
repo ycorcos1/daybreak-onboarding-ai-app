@@ -1,0 +1,3 @@
+class ImportedRow < ApplicationRecord
+end
+

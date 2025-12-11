@@ -38,7 +38,10 @@ module Backend
 
     # Enable cookies and session middleware for API authentication flows.
     config.middleware.use ActionDispatch::Cookies
-    config.middleware.use ActionDispatch::Session::CookieStore, key: "_daybreak_session", same_site: :lax
+    config.middleware.use ActionDispatch::Session::CookieStore,
+                                key: "_daybreak_session",
+                                same_site: :none,
+                                secure: Rails.env.production?
 
     # Only loads a smaller set of middleware suitable for API only apps.
     # Middleware like session, flash, cookies can be added back manually.

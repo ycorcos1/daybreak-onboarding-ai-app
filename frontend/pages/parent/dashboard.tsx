@@ -12,6 +12,18 @@ import { CREATE_CHILD_AND_REFERRAL } from "@/lib/graphql/mutations/referrals.gra
 import { ONBOARDING_STEPS } from "@/lib/onboardingSteps";
 import { MY_NOTIFICATIONS_QUERY } from "@/lib/graphql/queries/myNotifications";
 import SupportChatWidget from "@/components/chat/SupportChatWidget";
+import {
+  ORGANIZATIONS_QUERY,
+  OrganizationsQueryResult,
+} from "@/lib/graphql/queries/organizations";
+import {
+  CLINICIANS_QUERY,
+  CliniciansQueryResult,
+} from "@/lib/graphql/queries/clinicians";
+import {
+  CREDENTIALED_INSURANCES_QUERY,
+  CredentialedInsurancesResult,
+} from "@/lib/graphql/queries/credentialedInsurances";
 
 type MyReferralsResult = {
   myReferrals: Array<{
@@ -70,6 +82,17 @@ export default function ParentDashboard() {
     { variables: { unreadOnly: true } },
   );
 
+  const { data: orgData, loading: loadingOrgs } = useQuery<OrganizationsQueryResult>(
+    ORGANIZATIONS_QUERY,
+    { variables: { limit: 50 } },
+  );
+  const { data: clinicianData, loading: loadingClinicians } =
+    useQuery<CliniciansQueryResult>(CLINICIANS_QUERY, {
+      variables: { filter: { active: true }, limit: 10 },
+    });
+  const { data: insurersData, loading: loadingInsurers } =
+    useQuery<CredentialedInsurancesResult>(CREDENTIALED_INSURANCES_QUERY);
+
   const [createChildAndReferral, { loading: creatingReferral }] = useMutation(
     CREATE_CHILD_AND_REFERRAL,
     {
@@ -80,6 +103,13 @@ export default function ParentDashboard() {
   const referrals = useMemo(
     () => data?.myReferrals ?? [],
     [data?.myReferrals],
+  );
+
+  const organizations = useMemo(() => orgData?.organizations ?? [], [orgData]);
+  const clinicians = useMemo(() => clinicianData?.clinicians ?? [], [clinicianData]);
+  const insurers = useMemo(
+    () => insurersData?.credentialedInsurances ?? [],
+    [insurersData],
   );
 
   const onResume = (referralId: string, nextStep?: string | null) => {
@@ -250,6 +280,72 @@ export default function ParentDashboard() {
               Browse resources
             </Button>
           </Card>
+
+          <Card className="data-card">
+            <h3>Organizations</h3>
+            {loadingOrgs ? (
+              <p className="muted">Loading organizations…</p>
+            ) : organizations.length ? (
+              <ul className="compact-list">
+                {organizations.slice(0, 5).map((org) => (
+                  <li key={org.id}>
+                    <strong>{org.name || "Unnamed org"}</strong>
+                    {org.parentOrganization?.name ? (
+                      <span className="muted"> · {org.parentOrganization.name}</span>
+                    ) : null}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="muted">No organizations available.</p>
+            )}
+          </Card>
+
+          <Card className="data-card">
+            <h3>Clinicians</h3>
+            {loadingClinicians ? (
+              <p className="muted">Loading clinicians…</p>
+            ) : clinicians.length ? (
+              <ul className="compact-list">
+                {clinicians.slice(0, 5).map((cln) => (
+                  <li key={cln.id}>
+                    <strong>
+                      {[cln.firstName, cln.lastName].filter(Boolean).join(" ") || "Clinician"}
+                    </strong>
+                    {cln.licenseState ? (
+                      <span className="muted"> · {cln.licenseState}</span>
+                    ) : null}
+                    {cln.credentials ? (
+                      <span className="muted"> · {cln.credentials}</span>
+                    ) : null}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="muted">No clinicians available.</p>
+            )}
+          </Card>
+
+          <Card className="data-card">
+            <h3>Credentialed insurers</h3>
+            {loadingInsurers ? (
+              <p className="muted">Loading insurers…</p>
+            ) : insurers.length ? (
+              <ul className="compact-list">
+                {insurers.slice(0, 6).map((ins) => (
+                  <li key={ins.id}>
+                    <strong>{ins.name}</strong>
+                    {ins.state ? <span className="muted"> · {ins.state}</span> : null}
+                    {ins.networkStatus ? (
+                      <span className="muted"> · {ins.networkStatus}</span>
+                    ) : null}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="muted">No credentialed insurers available.</p>
+            )}
+          </Card>
         </div>
 
         <section className="referrals-section">
@@ -317,7 +413,8 @@ export default function ParentDashboard() {
 
         .start-card,
         .notifications,
-        .resources {
+        .resources,
+        .data-card {
           background: #fff;
         }
 
@@ -374,6 +471,19 @@ export default function ParentDashboard() {
           align-items: baseline;
           gap: 10px;
           flex-wrap: wrap;
+        }
+
+        .compact-list {
+          list-style: none;
+          padding: 0;
+          margin: 8px 0 0;
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+
+        .compact-list li {
+          line-height: 1.3;
         }
 
         @media (max-width: 900px) {

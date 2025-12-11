@@ -1,0 +1,23 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowAmplifyReadFrontendExport",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::971422717446:role/amplify-daybreak-service-role",
+        "Service": "amplify.amazonaws.com"
+      },
+      "Action": "s3:GetObject",
+      "Resource": [
+        "arn:aws:s3:::daybreak-dev-bucket/frontend-export.zip",
+        "arn:aws:s3:::daybreak-dev-bucket/frontend-export/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:amplify:us-east-1:971422717446:apps/d3ee272em8p6d7"
+        }
+      }
+    }
+  ]
+}

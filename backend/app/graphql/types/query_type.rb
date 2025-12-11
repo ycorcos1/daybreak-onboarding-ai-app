@@ -155,6 +155,95 @@ module Types
       require_admin!
       Notification.includes(:user, :referral).order(created_at: :desc).limit(limit)
     end
+
+    # ---- Admin-facing sample data views ----
+    field :admin_organizations, [Types::OrganizationType], null: false, description: "Admin list of all organizations" do
+      argument :limit, Integer, required: false, default_value: 500
+    end
+    def admin_organizations(limit:)
+      require_admin!
+      Organization.includes(:parent_organization, :contracts).order(:name).limit(limit)
+    end
+
+    field :admin_clinicians, [Types::ClinicianType], null: false, description: "Admin list of all clinicians" do
+      argument :limit, Integer, required: false, default_value: 200
+      argument :offset, Integer, required: false, default_value: 0
+    end
+    def admin_clinicians(limit:, offset:)
+      require_admin!
+      Clinician.includes(:credentialed_insurances, :clinician_credentialed_insurances, :clinician_availabilities)
+               .order(:last_name, :first_name)
+               .limit(limit)
+               .offset(offset)
+    end
+
+    field :admin_clinician, Types::ClinicianType, null: true, description: "Admin detail for a clinician" do
+      argument :id, ID, required: true
+    end
+    def admin_clinician(id:)
+      require_admin!
+      Clinician.includes(:credentialed_insurances, :clinician_credentialed_insurances, :clinician_availabilities).find_by(id: id)
+    end
+
+    field :admin_credentialed_insurances, [Types::CredentialedInsuranceType], null: false,
+          description: "Admin list of credentialed insurances"
+    def admin_credentialed_insurances
+      require_admin!
+      CredentialedInsurance.order(:name)
+    end
+
+    field :admin_insurance_coverages, [Types::InsuranceCoverageType], null: false,
+          description: "Admin list of insurance coverages"
+    def admin_insurance_coverages
+      require_admin!
+      InsuranceCoverage.includes(:user, :credentialed_insurance).order(created_at: :desc)
+    end
+
+    # ---- Sample data / reference datasets ----
+    field :organizations, [Types::OrganizationType], null: false,
+          description: "List of organizations (districts/schools)" do
+      argument :limit, Integer, required: false, default_value: 200
+    end
+    def organizations(limit:)
+      require_authentication!
+      Organization.includes(:contracts, :parent_organization).order(:name).limit(limit)
+    end
+
+    field :credentialed_insurances, [Types::CredentialedInsuranceType], null: false,
+          description: "List of credentialed insurances"
+    def credentialed_insurances
+      require_authentication!
+      CredentialedInsurance.order(:name)
+    end
+
+    field :clinicians, [Types::ClinicianType], null: false,
+          description: "Clinician roster (reference-only)" do
+      argument :filter, Types::Inputs::ClinicianFilterInput, required: false
+      argument :limit, Integer, required: false, default_value: 50
+      argument :offset, Integer, required: false, default_value: 0
+    end
+    def clinicians(filter: nil, limit: 50, offset: 0)
+      require_authentication!
+      scope = Clinician.includes(:credentialed_insurances, :clinician_credentialed_insurances, :clinician_availabilities)
+      scope = scope.where(active: filter[:active]) unless filter.nil? || filter[:active].nil?
+      if filter&.credentialed_insurance_id.present?
+        scope = scope.joins(:clinician_credentialed_insurances)
+                     .where(clinician_credentialed_insurances: { credentialed_insurance_id: filter[:credentialed_insurance_id] })
+      end
+      if filter&.license_state.present?
+        scope = scope.where("license_state ILIKE ?", "%#{filter[:license_state]}%")
+      end
+      scope.order(:last_name, :first_name).limit(limit).offset(offset)
+    end
+
+    field :clinician_availability, [Types::ClinicianAvailabilityType], null: false,
+          description: "Availability windows for a clinician" do
+      argument :clinician_id, ID, required: true
+    end
+    def clinician_availability(clinician_id:)
+      require_authentication!
+      ClinicianAvailability.where(clinician_id: clinician_id).order(:day_of_week, :start_time)
+    end
   end
 end
 

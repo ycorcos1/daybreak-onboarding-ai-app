@@ -30,6 +30,15 @@ export function AdminLayout({ children, title, description }: AdminLayoutProps) 
             Daybreak Admin
           </Link>
           <nav className="nav">
+            <Link href="/admin/organizations" className="nav-link">
+              Organizations
+            </Link>
+            <Link href="/admin/clinicians" className="nav-link">
+              Clinicians
+            </Link>
+            <Link href="/admin/insurance" className="nav-link">
+              Insurance
+            </Link>
             <Link href="/admin/referrals" className="nav-link">
               Referrals
             </Link>
